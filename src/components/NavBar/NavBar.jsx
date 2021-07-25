@@ -1,11 +1,6 @@
 import PropTypes from 'prop-types';
-import {
-  AppBar,
-  Button,
-  IconButton,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -13,8 +8,9 @@ const styles = {
   root: {
     flexGrow: 1,
   },
-  flex: {
+  toolbar: {
     justifyContent: 'space-between',
+    padding: '0 2.5rem',
   },
   homeButton: {
     color: 'inherit',
@@ -43,33 +39,48 @@ function HomeIcon(props) {
 }
 
 function NavBar(props) {
-  const { classes } = props;
+  const { classes, isLoggedIn } = props;
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="primary">
-        <Toolbar className={classes.flex}>
-          <IconButton
-            edge="start"
-            className={classes.homeButton}
-            color="inherit"
-            aria-label="menu">
-            <HomeIcon className={classes.homeIcon} />
-            <Typography variant="h6" className={classes.title}>
-              BLOG
-            </Typography>
-          </IconButton>
-          <Button color="inherit" className={classes.logButton}>
-            LogIn
-          </Button>
+      <AppBar position="static" color="secondary">
+        <Toolbar className={classes.toolbar}>
+          <Link exact to="/" style={{ all: 'unset' }}>
+            <Button
+              edge="start"
+              className={classes.homeButton}
+              color="inherit"
+              aria-label="menu">
+              <HomeIcon className={classes.homeIcon} />
+              <Typography variant="h6" className={classes.title}>
+                BLOG
+              </Typography>
+            </Button>
+          </Link>
+          {isLoggedIn ? (
+            <Button color="inherit" className={classes.logButton}>
+              LogOut
+            </Button>
+          ) : (
+            <Link to="/login" style={{ all: 'unset' }}>
+              <Button color="inherit" className={classes.logButton}>
+                LogIn
+              </Button>
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
     </div>
   );
 }
 
+NavBar.defaultProps = {
+  isLoggedIn: false,
+};
+
 NavBar.propTypes = {
   classes: PropTypes.shape.isRequired,
+  isLoggedIn: PropTypes.bool,
 };
 
 export default withStyles(styles)(NavBar);
