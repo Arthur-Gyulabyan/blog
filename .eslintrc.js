@@ -16,6 +16,8 @@ module.exports = {
     'prettier/prettier': ['error', prettierOptions],
     'import/no-named-as-default': 'off',
     'react/react-in-jsx-scope': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/no-unescaped-entities': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
   },
 };
