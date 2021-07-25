@@ -45,7 +45,7 @@ function NavBar(props) {
     <div className={classes.root}>
       <AppBar position="static" color="secondary">
         <Toolbar className={classes.toolbar}>
-          <Link exact to="/" style={{ all: 'unset' }}>
+          <Link exact="true" to="/" style={{ all: 'unset' }}>
             <Button
               edge="start"
               className={classes.homeButton}
@@ -79,7 +79,14 @@ NavBar.defaultProps = {
 };
 
 NavBar.propTypes = {
-  classes: PropTypes.shape.isRequired,
+  classes: PropTypes.shape({
+    root: PropTypes.string.isRequired,
+    toolbar: PropTypes.string.isRequired,
+    homeButton: PropTypes.string.isRequired,
+    homeIcon: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    logButton: PropTypes.string.isRequired,
+  }).isRequired,
   isLoggedIn: PropTypes.bool,
 };
 

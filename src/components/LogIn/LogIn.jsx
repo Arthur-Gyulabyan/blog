@@ -48,7 +48,7 @@ const styles = {
   },
 };
 
-function SignIn(props) {
+function LogIn(props) {
   const { classes } = props;
 
   return (
@@ -85,7 +85,7 @@ function SignIn(props) {
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox value="remember" color="secondary" />}
             label="Remember me"
           />
           <Button
@@ -117,8 +117,13 @@ function SignIn(props) {
   );
 }
 
-SignIn.propTypes = {
-  classes: PropTypes.shape.isRequired,
+LogIn.propTypes = {
+  classes: PropTypes.shape({
+    paper: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
+    form: PropTypes.string.isRequired,
+    submit: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
-export default withStyles(styles)(SignIn);
+export default withStyles(styles)(LogIn);
