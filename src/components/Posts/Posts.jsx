@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
 import Container from '@material-ui/core/Container';
 import Post from '../Post/Post';
-import getUniqueID from '../../helpers/idGenerator';
 
-export default function Posts({ posts }) {
+export default function Posts({ posts, deleteHandler }) {
   return (
     <Container maxWidth="sm">
       {posts.map((item) => {
-        const { title, content, author, date } = item;
-        const id = getUniqueID();
+        const { title, content, author, date, id } = item;
 
         return (
           <Post
@@ -17,6 +15,8 @@ export default function Posts({ posts }) {
             author={author}
             date={date}
             key={id}
+            id={id}
+            deleteHandler={deleteHandler}
           />
         );
       })}
@@ -26,4 +26,5 @@ export default function Posts({ posts }) {
 
 Posts.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object])).isRequired,
+  deleteHandler: PropTypes.func.isRequired,
 };
