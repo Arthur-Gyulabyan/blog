@@ -1,12 +1,21 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
+import {
+  AppBar,
+  Button,
+  Toolbar,
+  Typography,
+  Container,
+} from '@material-ui/core';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
   root: {
     flexGrow: 1,
+  },
+  leftContainer: {
+    margin: 0,
   },
   toolbar: {
     justifyContent: 'space-between',
@@ -15,6 +24,7 @@ const styles = {
   homeButton: {
     color: 'inherit',
     borderRadius: '0',
+    marginRight: '4rem',
   },
   homeIcon: {
     width: '2rem',
@@ -45,18 +55,31 @@ function NavBar(props) {
     <div className={classes.root}>
       <AppBar position="static" color="secondary">
         <Toolbar className={classes.toolbar}>
-          <Link exact="true" to="/" style={{ all: 'unset' }}>
-            <Button
-              edge="start"
-              className={classes.homeButton}
-              color="inherit"
-              aria-label="menu">
-              <HomeIcon className={classes.homeIcon} />
-              <Typography variant="h6" className={classes.title}>
-                BLOG
-              </Typography>
-            </Button>
-          </Link>
+          <Container className={classes.leftContainer}>
+            <Link exact="true" to="/" style={{ all: 'unset' }}>
+              <Button
+                edge="start"
+                className={classes.homeButton}
+                color="inherit"
+                aria-label="menu">
+                <HomeIcon className={classes.homeIcon} />
+                <Typography variant="h6" className={classes.title}>
+                  BLOG
+                </Typography>
+              </Button>
+            </Link>
+            <Link to="/add-post" style={{ all: 'unset' }}>
+              <Button
+                edge="start"
+                className={classes.homeButton}
+                color="inherit"
+                aria-label="menu">
+                <Typography variant="h6" className={classes.title}>
+                  ADD POST
+                </Typography>
+              </Button>
+            </Link>
+          </Container>
           {isLoggedIn ? (
             <Button color="inherit" className={classes.logButton}>
               LogOut
@@ -86,6 +109,7 @@ NavBar.propTypes = {
     homeIcon: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     logButton: PropTypes.string.isRequired,
+    leftContainer: PropTypes.string.isRequired,
   }).isRequired,
   isLoggedIn: PropTypes.bool,
 };
