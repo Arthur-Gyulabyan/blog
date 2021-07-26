@@ -4,6 +4,7 @@ import NavBar from '../NavBar/NavBar';
 import LogIn from '../LogIn/LogIn';
 import Posts from '../Posts/Posts';
 import PostCreator from '../PostCreator/PostCreator';
+import getUniqueId from '../../helpers/idGenerator';
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -15,14 +16,29 @@ export default class Main extends React.Component {
   }
 
   addPost = (title, content) => {
-    this.setState((prevState) => {
-      return {
-        posts: [
-          ...prevState.posts,
-          { title, content, author: 'Hendo', date: new Date().toDateString() },
-        ],
-      };
-    });
+    if (title && content) {
+      this.setState((prevState) => {
+        return {
+          posts: [
+            ...prevState.posts,
+            {
+              title,
+              content,
+              author: 'Hendo Pendo',
+              date: new Date().toDateString(),
+              id: getUniqueId(),
+            },
+          ],
+        };
+      });
+    }
+  };
+
+  deletePost = (id) => {
+    const { posts } = this.state;
+    const newPosts = posts.filter((item) => item.id !== id);
+
+    this.setState({ posts: newPosts });
   };
 
   render() {
@@ -34,7 +50,7 @@ export default class Main extends React.Component {
           <NavBar isLoggedIn={isLoggedIn} />
           <Switch>
             <Route exact path="/">
-              <Posts posts={posts} />
+              <Posts posts={posts} deleteHandler={this.deletePost} />
             </Route>
             <Route exact path="/add-post">
               <PostCreator clickHandler={this.addPost} />
