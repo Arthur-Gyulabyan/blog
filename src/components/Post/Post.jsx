@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { pink } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Delete from '@material-ui/icons/Delete';
 import PropTypes from 'prop-types';
 
 const styles = {
@@ -26,12 +26,15 @@ const styles = {
     paddingTop: '56.25%', // 16:9
   },
   avatar: {
+    width: '100%',
     backgroundColor: pink.A400,
+    borderRadius: '1rem',
+    padding: '0.5rem',
   },
 };
 
 function Post(props) {
-  const { classes, author, title, date, content } = props;
+  const { classes, author, title, date, content, deleteHandler, id } = props;
   const [liked, setLiked] = React.useState(false);
 
   const handleFavoriteClick = () => {
@@ -43,15 +46,15 @@ function Post(props) {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            {author[0].toUpperCase()}
+            {author}
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
+          <IconButton aria-label="delete" onClick={() => deleteHandler(id)}>
+            <Delete />
           </IconButton>
         }
-        title={title}
+        title={<Typography variant="h5">{title}</Typography>}
         subheader={date}
       />
       <CardContent>
@@ -83,6 +86,8 @@ Post.propTypes = {
   title: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 export default withStyles(styles)(Post);
