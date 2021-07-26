@@ -3,40 +3,27 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import NavBar from '../NavBar/NavBar';
 import LogIn from '../LogIn/LogIn';
 import Posts from '../Posts/Posts';
+import PostCreator from '../PostCreator/PostCreator';
 
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoggedIn: false,
-      posts: [
-        {
-          author: 'Arthur',
-          title: 'Hello',
-          content: 'May the force be with you!',
-          date: new Date().toDateString(),
-        },
-        {
-          author: 'Hayk',
-          title: 'Bye',
-          content: 'Hastala-Vista Baby',
-          date: new Date().toDateString(),
-        },
-        {
-          author: 'Eminem',
-          title: 'Sing For The Moment',
-          content: 'Bla Bla Bla',
-          date: new Date().toDateString(),
-        },
-        {
-          author: 'Mad Max',
-          title: 'Max Rockatansky',
-          content: 'Bla Bla Bla',
-          date: new Date().toDateString(),
-        },
-      ],
+      posts: [],
     };
   }
+
+  addPost = (title, content) => {
+    this.setState((prevState) => {
+      return {
+        posts: [
+          ...prevState.posts,
+          { title, content, author: 'Hendo', date: new Date().toDateString() },
+        ],
+      };
+    });
+  };
 
   render() {
     const { isLoggedIn, posts } = this.state;
@@ -48,6 +35,9 @@ export default class Main extends React.Component {
           <Switch>
             <Route exact path="/">
               <Posts posts={posts} />
+            </Route>
+            <Route exact path="/add-post">
+              <PostCreator clickHandler={this.addPost} />
             </Route>
 
             <Route path="/login">
