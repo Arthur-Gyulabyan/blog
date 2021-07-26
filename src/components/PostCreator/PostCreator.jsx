@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 const styles = {
   flexContainer: {
@@ -24,6 +25,22 @@ const styles = {
 };
 
 function PostCreator({ classes, clickHandler }) {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleContentChange = (e) => {
+    setContent(e.target.value);
+  };
+
+  const clearTextField = () => {
+    setTitle('');
+    setContent('');
+  };
+
   return (
     <Container maxWidth="sm" className={classes.flexContainer}>
       <TextField
@@ -31,6 +48,8 @@ function PostCreator({ classes, clickHandler }) {
         label="Title"
         color="secondary"
         className={classes.flexItem}
+        value={title}
+        onChange={handleTitleChange}
       />
       <TextField
         id="filled-multiline-flexible"
@@ -40,8 +59,18 @@ function PostCreator({ classes, clickHandler }) {
         variant="filled"
         color="secondary"
         className={classes.flexItem}
+        value={content}
+        onChange={handleContentChange}
       />
-      <Button type="submit" fullWidth variant="contained" color="secondary">
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="secondary"
+        onClick={() => {
+          clickHandler(title, content);
+          clearTextField();
+        }}>
         Add Post
       </Button>
     </Container>
