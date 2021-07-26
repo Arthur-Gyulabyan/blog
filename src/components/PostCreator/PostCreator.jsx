@@ -1,9 +1,10 @@
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const styles = {
   flexContainer: {
@@ -17,9 +18,9 @@ const styles = {
       marginTop: '4rem',
     },
   },
-  textField: {
-    '&:after': {
-      borderBottom: '2px solid #3f51b5',
+  disabledBtn: {
+    '&:hover': {
+      cursor: 'not-allowed',
     },
   },
 };
@@ -29,11 +30,14 @@ function PostCreator({ classes, clickHandler }) {
   const [content, setContent] = useState('');
 
   const handleTitleChange = (e) => {
-    setTitle(e.target.value);
+    const text = e.target.value;
+    setTitle(text);
   };
 
   const handleContentChange = (e) => {
-    setContent(e.target.value);
+    const text = e.target.value;
+
+    setContent(text);
   };
 
   const clearTextField = () => {
@@ -43,36 +47,53 @@ function PostCreator({ classes, clickHandler }) {
 
   return (
     <Container maxWidth="sm" className={classes.flexContainer}>
-      <TextField
-        id="standard-basic"
-        label="Title"
-        color="secondary"
-        className={classes.flexItem}
-        value={title}
-        onChange={handleTitleChange}
-      />
-      <TextField
-        id="filled-multiline-flexible"
-        label="Content"
-        multiline
-        rows={6}
-        variant="filled"
-        color="secondary"
-        className={classes.flexItem}
-        value={content}
-        onChange={handleContentChange}
-      />
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        color="secondary"
-        onClick={() => {
-          clickHandler(title, content);
-          clearTextField();
-        }}>
-        Add Post
-      </Button>
+      <form>
+        <TextField
+          required
+          id="standard-basic"
+          label="Title"
+          color="secondary"
+          className={classes.flexItem}
+          value={title}
+          onChange={handleTitleChange}
+        />
+        <TextField
+          required
+          id="filled-multiline-flexible"
+          label="Content"
+          multiline
+          rows={6}
+          variant="filled"
+          color="secondary"
+          className={classes.flexItem}
+          value={content}
+          onChange={handleContentChange}
+        />
+        {Boolean(title) && Boolean(content) ? (
+          <Link to="/" style={{ all: 'unset' }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                clickHandler(title, content);
+                clearTextField();
+              }}>
+              Add Post
+            </Button>
+          </Link>
+        ) : (
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.disabledBtn}>
+            Add Post
+          </Button>
+        )}
+      </form>
     </Container>
   );
 }
@@ -81,6 +102,7 @@ PostCreator.propTypes = {
   classes: PropTypes.shape({
     flexContainer: PropTypes.string.isRequired,
     flexItem: PropTypes.string.isRequired,
+    disabledBtn: PropTypes.string.isRequired,
   }).isRequired,
   clickHandler: PropTypes.func.isRequired,
 };
