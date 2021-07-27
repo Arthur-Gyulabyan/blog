@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {
@@ -9,6 +10,7 @@ import {
 } from '@material-ui/core';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { withStyles } from '@material-ui/core/styles';
+import LogOutModal from '../LogOutModal/LogOutModal';
 
 const styles = {
   root: {
@@ -48,8 +50,16 @@ function HomeIcon(props) {
   );
 }
 
-function NavBar(props) {
-  const { classes, isLoggedIn } = props;
+function NavBar({ classes, isLoggedIn }) {
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -81,7 +91,10 @@ function NavBar(props) {
             </Link>
           </Container>
           {isLoggedIn ? (
-            <Button color="inherit" className={classes.logButton}>
+            <Button
+              color="inherit"
+              className={classes.logButton}
+              onClick={handleOpen}>
               LogOut
             </Button>
           ) : (
@@ -93,6 +106,7 @@ function NavBar(props) {
           )}
         </Toolbar>
       </AppBar>
+      <LogOutModal handleClose={handleClose} isOpen={open} />
     </div>
   );
 }
