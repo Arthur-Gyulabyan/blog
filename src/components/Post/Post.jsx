@@ -87,7 +87,7 @@ Post.propTypes = {
   date: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
   deleteHandler: PropTypes.func.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(Post);
