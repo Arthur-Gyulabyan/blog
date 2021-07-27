@@ -25,7 +25,7 @@ export default class Main extends React.Component {
           {
             title,
             content,
-            author: 'Hendo Pendo',
+            author: 'Arthur Gyulabyan',
             date: new Date().toDateString(),
             id: generateUniqueID(),
           },
