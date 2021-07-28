@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { generateUniqueID } from 'web-vitals/dist/modules/lib/generateUniqueID';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -88,11 +90,14 @@ const styles = {
   },
 };
 
-function LogIn({ classes }) {
+function LogIn({ classes, handleLogInClick }) {
+  const history = useHistory();
   const [isValidUsername, setIsValidUsername] = useState(false);
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [isFilledUsername, setIsFilledUsername] = useState(false);
   const [isFilledPassword, setIsFilledPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const validationTexts = {
     validUsername: 'Valid username',
@@ -107,6 +112,7 @@ function LogIn({ classes }) {
     input ? setIsFilledUsername(true) : setIsFilledUsername(false);
 
     setIsValidUsername(isValidInput(input, e.target.name));
+    setUsername(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
@@ -115,6 +121,7 @@ function LogIn({ classes }) {
     input ? setIsFilledPassword(true) : setIsFilledPassword(false);
 
     setIsValidPassword(isValidInput(input, e.target.name));
+    setPassword(e.target.value);
   };
 
   return (
@@ -201,7 +208,11 @@ function LogIn({ classes }) {
             fullWidth
             variant="contained"
             color="secondary"
-            className={classes.submit}>
+            className={classes.submit}
+            onClick={() => {
+              handleLogInClick(username, generateUniqueID());
+              history.push('/add-post');
+            }}>
             Log In
           </Button>
         </form>
@@ -226,6 +237,7 @@ LogIn.propTypes = {
     hiddenText: PropTypes.string.isRequired,
     submit: PropTypes.string.isRequired,
   }).isRequired,
+  handleLogInClick: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(LogIn);
