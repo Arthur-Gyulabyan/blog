@@ -9,6 +9,8 @@ import {
   Container,
 } from '@material-ui/core';
 import SvgIcon from '@material-ui/core/SvgIcon';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import { withStyles } from '@material-ui/core/styles';
 import LogOutModal from '../LogOutModal/LogOutModal';
 
@@ -39,6 +41,8 @@ const styles = {
   logButton: {
     fontSize: '1.5rem',
     textTransform: 'none',
+    padding: '0 1rem',
+    marginLeft: '4rem',
   },
 };
 
@@ -50,7 +54,7 @@ function HomeIcon(props) {
   );
 }
 
-function NavBar({ classes, isLoggedIn, handleClick }) {
+function NavBar({ classes, isLoggedIn, handleClick, currentUserName }) {
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
@@ -93,6 +97,16 @@ function NavBar({ classes, isLoggedIn, handleClick }) {
             </Button>
           </Container>
           {isLoggedIn ? (
+            <>
+              <Typography variant="h6" component="p">
+                {currentUserName}
+              </Typography>
+              <AccountCircleIcon fontSize="large" />
+            </>
+          ) : (
+            <PersonAddDisabledIcon fontSize="medium" />
+          )}
+          {isLoggedIn ? (
             <Button
               color="inherit"
               className={classes.logButton}
@@ -133,6 +147,7 @@ NavBar.propTypes = {
   }).isRequired,
   isLoggedIn: PropTypes.bool,
   handleClick: PropTypes.func.isRequired,
+  currentUserName: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(NavBar);
