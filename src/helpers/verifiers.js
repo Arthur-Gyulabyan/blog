@@ -8,7 +8,7 @@ const isValidInput = (input, type) => {
 
   switch (lowerCaseType) {
     case 'username':
-      return regExes.name.test(input) && input.length > 1;
+      return regExes.name.test(input) && input.length > 1 && input.length < 11;
     case 'password':
       return regExes.password.test(input);
     default:
