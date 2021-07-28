@@ -15,10 +15,7 @@ export default class Main extends React.Component {
       isLoggedIn: false,
       posts: getData('posts') ?? [],
       users: getData('users') ?? [],
-      currentUser: {
-        name: '',
-        userId: '',
-      },
+      currentUser: getData('currentUser'),
     };
   }
 
@@ -62,6 +59,7 @@ export default class Main extends React.Component {
       const newUsers = [...prevState.users, { name, id: userId, password }];
 
       saveData('users', newUsers);
+      saveData('currentUser', { name, userId });
 
       return {
         isLoggedIn: true,
@@ -75,17 +73,20 @@ export default class Main extends React.Component {
   };
 
   handleLogOut = () => {
-    this.setState({ isLoggedIn: false, currentUser: {} });
+    this.setState({ isLoggedIn: false, currentUser: null });
   };
 
   render() {
-    const { isLoggedIn, posts, currentUser, users } = this.state;
-    console.log(users);
+    const { isLoggedIn, posts, currentUser } = this.state;
 
     return (
       <>
         <Router>
-          <NavBar isLoggedIn={isLoggedIn} handleClick={this.handleLogOut} />
+          <NavBar
+            isLoggedIn={isLoggedIn}
+            handleClick={this.handleLogOut}
+            currentUserName={currentUser ? currentUser.name : ''}
+          />
           <Switch>
             <Route exact path="/">
               <Posts posts={posts} deleteHandler={this.deletePost} />
@@ -93,7 +94,7 @@ export default class Main extends React.Component {
             <Route exact path="/add-post">
               <PostCreator
                 clickHandler={this.addPost}
-                currentUserName={currentUser.name}
+                currentUserName={currentUser ? currentUser.name : ''}
               />
             </Route>
 
