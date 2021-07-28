@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,7 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { createTheme, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import PropTypes from 'prop-types';
+import { red, green } from '@material-ui/core/colors';
+import isValidInput from '../../helpers/verifiers';
 
 function Copyright() {
   return (
@@ -42,13 +45,77 @@ const styles = {
     width: '100%',
     marginTop: theme.spacing(1),
   },
+  inputField: {
+    marginBottom: 0,
+  },
+  validInputField: {
+    '& .MuiInputBase-input + fieldset': {
+      borderColor: green.A400,
+    },
+    '& .MuiInputBase-input:focus + fieldset': {
+      borderColor: green.A400,
+    },
+    '& .Mui-required': {
+      color: green.A400,
+    },
+  },
+  invalidInputField: {
+    '& .MuiInputBase-input + fieldset': {
+      borderColor: red.A400,
+    },
+    '& .MuiInputBase-input:focus + fieldset': {
+      borderColor: red.A200,
+    },
+    '& .Mui-required': {
+      color: red.A200,
+    },
+  },
+  validText: {
+    width: '100%',
+    marginLeft: '0.6rem',
+    color: green.A400,
+  },
+  invalidText: {
+    width: '100%',
+    marginLeft: '0.6rem',
+    color: red.A200,
+  },
+  hiddenText: {
+    visibility: 'hidden',
+  },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
 };
 
-function LogIn(props) {
-  const { classes } = props;
+function LogIn({ classes }) {
+  const [isValidUsername, setIsValidUsername] = useState(false);
+  const [isValidPassword, setIsValidPassword] = useState(false);
+  const [isFilledUsername, setIsFilledUsername] = useState(false);
+  const [isFilledPassword, setIsFilledPassword] = useState(false);
+
+  const validationTexts = {
+    validUsername: 'Valid username',
+    invalidUsername: 'Only letters (2-10)',
+    validPassword: 'Valid password',
+    invalidPassword: 'At least 1 number, 1 uppercase (6-20)',
+  };
+
+  const handleUsernameChange = (e) => {
+    const input = e.target.value;
+
+    input ? setIsFilledUsername(true) : setIsFilledUsername(false);
+
+    setIsValidUsername(isValidInput(input, e.target.name));
+  };
+
+  const handlePasswordChange = (e) => {
+    const input = e.target.value;
+
+    input ? setIsFilledPassword(true) : setIsFilledPassword(false);
+
+    setIsValidPassword(isValidInput(input, e.target.name));
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -62,6 +129,11 @@ function LogIn(props) {
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
+            className={`${classes.inputField} ${
+              isValidUsername
+                ? classes.validInputField
+                : classes.invalidInputField
+            }`}
             variant="outlined"
             margin="normal"
             required
@@ -69,10 +141,31 @@ function LogIn(props) {
             id="username"
             label="Username"
             name="username"
-            autoComplete="username"
+            autoComplete="off"
             autoFocus
+            onChange={handleUsernameChange}
           />
+          <Typography
+            style={
+              isFilledUsername
+                ? { visibility: 'visible' }
+                : { visibility: 'hidden' }
+            }
+            variant="caption"
+            component="p"
+            className={
+              isValidUsername ? classes.validText : classes.invalidText
+            }>
+            {isValidUsername
+              ? validationTexts.validUsername
+              : validationTexts.invalidUsername}
+          </Typography>
           <TextField
+            className={`${classes.inputField} ${
+              isValidPassword
+                ? classes.validInputField
+                : classes.invalidInputField
+            }`}
             variant="outlined"
             margin="normal"
             required
@@ -82,13 +175,29 @@ function LogIn(props) {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handlePasswordChange}
           />
+          <Typography
+            style={
+              isFilledPassword
+                ? { visibility: 'visible' }
+                : { visibility: 'hidden' }
+            }
+            variant="caption"
+            component="p"
+            className={
+              isValidPassword ? classes.validText : classes.invalidText
+            }>
+            {isValidPassword
+              ? validationTexts.validPassword
+              : validationTexts.invalidPassword}
+          </Typography>
           <FormControlLabel
             control={<Checkbox value="remember" color="secondary" />}
             label="Remember me"
           />
           <Button
-            type="submit"
+            disabled={!(isValidUsername && isValidPassword)}
             fullWidth
             variant="contained"
             color="secondary"
@@ -109,6 +218,12 @@ LogIn.propTypes = {
     paper: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,
     form: PropTypes.string.isRequired,
+    inputField: PropTypes.string.isRequired,
+    validInputField: PropTypes.string.isRequired,
+    invalidInputField: PropTypes.string.isRequired,
+    validText: PropTypes.string.isRequired,
+    invalidText: PropTypes.string.isRequired,
+    hiddenText: PropTypes.string.isRequired,
     submit: PropTypes.string.isRequired,
   }).isRequired,
 };
