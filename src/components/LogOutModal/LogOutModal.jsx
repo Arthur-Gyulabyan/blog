@@ -33,13 +33,20 @@ const styles = {
   },
 };
 
-function LogOutModal({ classes, handleClose, isOpen }) {
+function LogOutModal({ classes, handleClose, isOpen, handleClick }) {
   const body = (
     <div className={classes.paper}>
       <h2 id="simple-modal-title" className={classes.centeredText}>
         Are you sure?
       </h2>
-      <Button className={classes.approveButton}>Yes</Button>
+      <Button
+        className={classes.approveButton}
+        onClick={() => {
+          handleClick();
+          handleClose();
+        }}>
+        Yes
+      </Button>
     </div>
   );
 
@@ -63,6 +70,7 @@ LogOutModal.propTypes = {
     approveButton: PropTypes.string.isRequired,
   }).isRequired,
   handleClose: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
 };
 
