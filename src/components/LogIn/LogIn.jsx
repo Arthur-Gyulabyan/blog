@@ -34,10 +34,15 @@ const theme = createTheme();
 
 const styles = {
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+  },
+  redirectionText: {
+    marginTop: theme.spacing(2),
+    textAlign: 'center',
+    color: red['200'],
   },
   avatar: {
     margin: theme.spacing(1),
@@ -92,12 +97,10 @@ const styles = {
 
 function LogIn({ classes, handleLogInClick }) {
   const history = useHistory();
-  const [isValidUsername, setIsValidUsername] = useState(false);
-  const [isValidPassword, setIsValidPassword] = useState(false);
-  const [isFilledUsername, setIsFilledUsername] = useState(false);
-  const [isFilledPassword, setIsFilledPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isValidUsername, setIsValidUsername] = useState(false);
+  const [isValidPassword, setIsValidPassword] = useState(false);
 
   const validationTexts = {
     validUsername: 'Valid username',
@@ -107,26 +110,25 @@ function LogIn({ classes, handleLogInClick }) {
   };
 
   const handleUsernameChange = (e) => {
-    const input = e.target.value;
+    const { value, name } = e.target;
 
-    input ? setIsFilledUsername(true) : setIsFilledUsername(false);
-
-    setIsValidUsername(isValidInput(input, e.target.name));
+    setIsValidUsername(isValidInput(value, name));
     setUsername(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
-    const input = e.target.value;
+    const { value, name } = e.target;
 
-    input ? setIsFilledPassword(true) : setIsFilledPassword(false);
-
-    setIsValidPassword(isValidInput(input, e.target.name));
+    setIsValidPassword(isValidInput(value, name));
     setPassword(e.target.value);
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <Typography variant="h5" className={classes.redirectionText}>
+        Log In to be Able to Add Post
+      </Typography>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
@@ -154,7 +156,7 @@ function LogIn({ classes, handleLogInClick }) {
           />
           <Typography
             style={
-              isFilledUsername
+              username.length
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }
@@ -186,7 +188,7 @@ function LogIn({ classes, handleLogInClick }) {
           />
           <Typography
             style={
-              isFilledPassword
+              password.length
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }
@@ -227,6 +229,7 @@ function LogIn({ classes, handleLogInClick }) {
 LogIn.propTypes = {
   classes: PropTypes.shape({
     paper: PropTypes.string.isRequired,
+    redirectionText: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,
     form: PropTypes.string.isRequired,
     inputField: PropTypes.string.isRequired,
