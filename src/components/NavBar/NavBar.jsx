@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   AppBar,
   Button,
@@ -50,7 +50,8 @@ function HomeIcon(props) {
   );
 }
 
-function NavBar({ classes, isLoggedIn }) {
+function NavBar({ classes, isLoggedIn, handleClick }) {
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
@@ -78,17 +79,18 @@ function NavBar({ classes, isLoggedIn }) {
                 </Typography>
               </Button>
             </Link>
-            <Link to="/add-post" style={{ all: 'unset' }}>
-              <Button
-                edge="start"
-                className={classes.homeButton}
-                color="inherit"
-                aria-label="menu">
-                <Typography variant="h6" className={classes.title}>
-                  ADD POST
-                </Typography>
-              </Button>
-            </Link>
+            <Button
+              onClick={() => {
+                isLoggedIn ? history.push('/add-post') : history.push('/login');
+              }}
+              edge="start"
+              className={classes.homeButton}
+              color="inherit"
+              aria-label="menu">
+              <Typography variant="h6" className={classes.title}>
+                ADD POST
+              </Typography>
+            </Button>
           </Container>
           {isLoggedIn ? (
             <Button
@@ -106,7 +108,11 @@ function NavBar({ classes, isLoggedIn }) {
           )}
         </Toolbar>
       </AppBar>
-      <LogOutModal handleClose={handleClose} isOpen={open} />
+      <LogOutModal
+        handleClose={handleClose}
+        isOpen={open}
+        handleClick={handleClick}
+      />
     </div>
   );
 }
@@ -126,6 +132,7 @@ NavBar.propTypes = {
     leftContainer: PropTypes.string.isRequired,
   }).isRequired,
   isLoggedIn: PropTypes.bool,
+  handleClick: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(NavBar);
