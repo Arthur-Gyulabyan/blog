@@ -210,7 +210,7 @@ function LogIn({ classes, handleLogInClick }) {
             color="secondary"
             className={classes.submit}
             onClick={() => {
-              handleLogInClick(username, generateUniqueID());
+              handleLogInClick(username, generateUniqueID(), password);
               history.push('/add-post');
             }}>
             Log In

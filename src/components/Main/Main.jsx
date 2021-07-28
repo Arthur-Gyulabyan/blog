@@ -14,6 +14,7 @@ export default class Main extends React.Component {
     this.state = {
       isLoggedIn: false,
       posts: getData('posts') ?? [],
+      users: getData('users') ?? [],
       currentUser: {
         name: '',
         userId: '',
@@ -56,13 +57,20 @@ export default class Main extends React.Component {
     this.setState({ posts: newPosts });
   };
 
-  handleLogIn = (name, userId) => {
-    this.setState({
-      isLoggedIn: true,
-      currentUser: {
-        name,
-        userId,
-      },
+  handleLogIn = (name, userId, password) => {
+    this.setState((prevState) => {
+      const newUsers = [...prevState.users, { name, id: userId, password }];
+
+      saveData('users', newUsers);
+
+      return {
+        isLoggedIn: true,
+        users: newUsers,
+        currentUser: {
+          name,
+          userId,
+        },
+      };
     });
   };
 
@@ -71,7 +79,8 @@ export default class Main extends React.Component {
   };
 
   render() {
-    const { isLoggedIn, posts, currentUser } = this.state;
+    const { isLoggedIn, posts, currentUser, users } = this.state;
+    console.log(users);
 
     return (
       <>
