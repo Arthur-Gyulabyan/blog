@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const styles = {
   flexContainer: {
@@ -26,6 +26,7 @@ const styles = {
 };
 
 function PostCreator({ classes, clickHandler }) {
+  const history = useHistory();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -70,19 +71,18 @@ function PostCreator({ classes, clickHandler }) {
           onChange={handleContentChange}
         />
         {Boolean(title) && Boolean(content) ? (
-          <Link to="/" style={{ all: 'unset' }}>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                clickHandler(title, content);
-                clearTextField();
-              }}>
-              Add Post
-            </Button>
-          </Link>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              clickHandler(title, content);
+              clearTextField();
+              history.push('/');
+            }}>
+            Add Post
+          </Button>
         ) : (
           <Button
             type="submit"

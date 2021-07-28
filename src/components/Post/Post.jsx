@@ -33,8 +33,7 @@ const styles = {
   },
 };
 
-function Post(props) {
-  const { classes, author, title, date, content, deleteHandler, id } = props;
+function Post({ classes, author, title, date, content, deleteHandler, id }) {
   const [liked, setLiked] = React.useState(false);
 
   const handleFavoriteClick = () => {
