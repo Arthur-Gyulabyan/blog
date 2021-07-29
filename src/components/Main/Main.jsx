@@ -12,7 +12,7 @@ export default class Main extends React.Component {
     super(props);
 
     this.state = {
-      isLoggedIn: false,
+      isLoggedIn: Boolean(getData('currentUser')),
       posts: getData('posts') ?? [],
       users: getData('users') ?? [],
       currentUser: getData('currentUser'),
@@ -21,7 +21,7 @@ export default class Main extends React.Component {
 
   addPost = (title, content) => {
     const {
-      currentUser: { name },
+      currentUser: { name, userId },
     } = this.state;
 
     if (title && content) {
@@ -32,6 +32,7 @@ export default class Main extends React.Component {
             title,
             content,
             author: name,
+            authorId: userId,
             date: new Date().toDateString(),
             id: generateUniqueID(),
           },
@@ -73,6 +74,7 @@ export default class Main extends React.Component {
   };
 
   handleLogOut = () => {
+    saveData('currentUser', null);
     this.setState({ isLoggedIn: false, currentUser: null });
   };
 
