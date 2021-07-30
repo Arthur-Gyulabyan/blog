@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { withSnackbar } from 'notistack';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { generateUniqueID } from 'web-vitals/dist/modules/lib/generateUniqueID';
 import NavBar from '../NavBar/NavBar';
@@ -6,8 +8,9 @@ import LogIn from '../LogIn/LogIn';
 import Posts from '../Posts/Posts';
 import PostCreator from '../PostCreator/PostCreator';
 import { saveData, getData } from '../../helpers/localStorage';
+import { findUserByNameAndPassword } from '../../helpers/checkUsersExistence';
 
-export default class Main extends React.Component {
+class Main extends React.Component {
   constructor(props) {
     super(props);
 
@@ -48,29 +51,62 @@ export default class Main extends React.Component {
   };
 
   deletePost = (id) => {
-    const { posts } = this.state;
-    const newPosts = posts.filter((item) => item.id !== id);
+    const { currentUser, posts } = this.state;
+    const targetPost = posts.find((item) => item.id === id);
+    const deletable = currentUser
+      ? targetPost.authorId === currentUser.userId
+      : false;
 
-    saveData('posts', newPosts);
-    this.setState({ posts: newPosts });
+    if (deletable) {
+      const newPosts = posts.filter((item) => item.id !== id);
+
+      saveData('posts', newPosts);
+      this.setState({ posts: newPosts });
+    }
+
+    this.showNotificationOnDelete(deletable);
+  };
+
+  showNotificationOnDelete = (deletable) => {
+    const { enqueueSnackbar } = this.props;
+
+    const message = deletable
+      ? 'Post deleted.'
+      : 'You can delete only your posts';
+    enqueueSnackbar(message, {
+      variant: deletable ? 'success' : 'error',
+    });
   };
 
   handleLogIn = (name, userId, password) => {
-    this.setState((prevState) => {
-      const newUsers = [...prevState.users, { name, id: userId, password }];
+    const { users } = this.state;
+    const userFromBase = findUserByNameAndPassword(users, name, password);
 
-      saveData('users', newUsers);
-      saveData('currentUser', { name, userId });
-
-      return {
+    if (userFromBase) {
+      this.setState({
         isLoggedIn: true,
-        users: newUsers,
         currentUser: {
-          name,
-          userId,
+          name: userFromBase.name,
+          userId: userFromBase.id,
         },
-      };
-    });
+      });
+    } else {
+      this.setState((prevState) => {
+        const newUsers = [...prevState.users, { name, id: userId, password }];
+
+        saveData('users', newUsers);
+
+        return {
+          isLoggedIn: true,
+          users: newUsers,
+          currentUser: {
+            name,
+            userId,
+          },
+        };
+      });
+    }
+    saveData('currentUser', { name, userId });
   };
 
   handleLogOut = () => {
@@ -91,7 +127,7 @@ export default class Main extends React.Component {
           />
           <Switch>
             <Route exact path="/">
-              <Posts posts={posts} deleteHandler={this.deletePost} />
+              <Posts posts={posts} deleteHandler={this.deletePost} curr />
             </Route>
             <Route exact path="/add-post">
               <PostCreator
@@ -109,3 +145,9 @@ export default class Main extends React.Component {
     );
   }
 }
+
+Main.propTypes = {
+  enqueueSnackbar: PropTypes.func.isRequired,
+};
+
+export default withSnackbar(Main);
