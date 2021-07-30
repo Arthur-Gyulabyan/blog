@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { createTheme, withStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
@@ -34,6 +35,8 @@ const styles = {
 };
 
 function LogOutModal({ classes, handleClose, isOpen, handleClick }) {
+  const history = useHistory();
+
   const body = (
     <div className={classes.paper}>
       <h2 id="simple-modal-title" className={classes.centeredText}>
@@ -44,6 +47,7 @@ function LogOutModal({ classes, handleClose, isOpen, handleClick }) {
         onClick={() => {
           handleClick();
           handleClose();
+          history.push('/');
         }}>
         Yes
       </Button>
