@@ -15,7 +15,8 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Delete from '@material-ui/icons/Delete';
 import PropTypes from 'prop-types';
-import { TextField } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import Comments from '../Comments/Comments';
 
 const theme = createTheme();
@@ -85,6 +86,7 @@ function Post({
 }) {
   const [liked, setLiked] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
+  const [commentText, setCommentText] = React.useState('');
 
   const handleFavoriteClick = () => {
     setLiked(!liked);
@@ -92,6 +94,19 @@ function Post({
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const handleCommentChange = (e) => {
+    const text = e.target.value;
+    setCommentText(text);
+  };
+
+  const clearCommentTextField = () => {
+    setCommentText('');
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
   };
 
   return (
@@ -140,14 +155,35 @@ function Post({
           <Typography variant="h6" className={classes.commentsHeader}>
             Comments
           </Typography>
-          <TextField
-            required
-            id="standard-basic"
-            label="Add Comment"
-            color="secondary"
-            className={classes.commentInput}
-            onKeyPress={(e) => enterHandler(e, id)}
-          />
+          <form onSubmit={submitHandler}>
+            <TextField
+              type="text"
+              id="standard-basic"
+              label="Add Comment"
+              color="secondary"
+              className={classes.commentInput}
+              value={commentText}
+              onChange={handleCommentChange}
+              onKeyPress={(e) => {
+                if (commentText && e.key === 'Enter') {
+                  enterHandler(e, id, commentText);
+                  clearCommentTextField();
+                }
+              }}
+            />
+            <Button
+              type="button"
+              variant="contained"
+              color="secondary"
+              onClick={(e) => {
+                if (commentText) {
+                  enterHandler(e, id, commentText);
+                  clearCommentTextField();
+                }
+              }}>
+              Add Comment
+            </Button>
+          </form>
           <Comments comments={comments} />
         </CardContent>
       </Collapse>
