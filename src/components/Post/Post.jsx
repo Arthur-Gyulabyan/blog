@@ -16,6 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Delete from '@material-ui/icons/Delete';
 import PropTypes from 'prop-types';
 import { TextField } from '@material-ui/core';
+import Comments from '../Comments/Comments';
 
 const theme = createTheme();
 
@@ -46,7 +47,7 @@ const styles = {
     transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.complex,
     }),
-    margin: '1rem 0',
+    marginBottom: '1rem',
     '& .MuiInputBase-root': {
       width: '50%',
     },
@@ -61,6 +62,7 @@ const styles = {
   },
   commentsHeader: {
     borderTop: '1px solid rgba(0, 0, 0, 0.42)',
+    color: theme.palette.text.secondary,
   },
   avatar: {
     width: '100%',
@@ -70,7 +72,17 @@ const styles = {
   },
 };
 
-function Post({ classes, author, title, date, content, deleteHandler, id }) {
+function Post({
+  classes,
+  author,
+  title,
+  date,
+  content,
+  comments,
+  deleteHandler,
+  enterHandler,
+  id,
+}) {
   const [liked, setLiked] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
 
@@ -124,7 +136,7 @@ function Post({ classes, author, title, date, content, deleteHandler, id }) {
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent style={{ position: 'relative' }}>
+        <CardContent>
           <Typography variant="h6" className={classes.commentsHeader}>
             Comments
           </Typography>
@@ -134,7 +146,9 @@ function Post({ classes, author, title, date, content, deleteHandler, id }) {
             label="Add Comment"
             color="secondary"
             className={classes.commentInput}
+            onKeyPress={(e) => enterHandler(e, id)}
           />
+          <Comments comments={comments} />
         </CardContent>
       </Collapse>
     </Card>
@@ -154,7 +168,10 @@ Post.propTypes = {
   title: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
+  comments: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object]))
+    .isRequired,
   deleteHandler: PropTypes.func.isRequired,
+  enterHandler: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
 };
 
