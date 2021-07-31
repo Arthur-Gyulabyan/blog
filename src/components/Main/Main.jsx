@@ -23,8 +23,10 @@ class Main extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { posts } = this.state;
+    const { posts, users, currentUser } = this.state;
     saveData('posts', posts);
+    saveData('users', users);
+    saveData('currentUser', currentUser);
   }
 
   addPost = (title, content) => {
@@ -47,8 +49,6 @@ class Main extends React.Component {
           },
         ];
 
-        saveData('posts', newPosts);
-
         return {
           posts: newPosts,
         };
@@ -66,7 +66,6 @@ class Main extends React.Component {
     if (deletable) {
       const newPosts = posts.filter((item) => item.id !== id);
 
-      saveData('posts', newPosts);
       this.setState({ posts: newPosts });
     }
 
@@ -100,8 +99,6 @@ class Main extends React.Component {
       this.setState((prevState) => {
         const newUsers = [...prevState.users, { name, id: userId, password }];
 
-        saveData('users', newUsers);
-
         return {
           isLoggedIn: true,
           users: newUsers,
@@ -112,35 +109,30 @@ class Main extends React.Component {
         };
       });
     }
-    saveData('currentUser', { name, userId });
   };
 
   handleLogOut = () => {
-    saveData('currentUser', null);
     this.setState({ isLoggedIn: false, currentUser: null });
   };
 
-  addComment = (e, id) => {
-    if (e.key === 'Enter') {
-      const { currentUser, posts } = this.state;
-      const postsCopy = JSON.parse(JSON.stringify(posts));
-      const targetPost = postsCopy.find((item) => item.id === id);
-      const newComment = {
-        author: currentUser.name,
-        content: e.target.value,
-        date: new Date().toDateString(),
-        id: generateUniqueID(),
+  addComment = (e, id, text) => {
+    const { currentUser, posts } = this.state;
+    const postsCopy = JSON.parse(JSON.stringify(posts));
+    const targetPost = postsCopy.find((item) => item.id === id);
+    const newComment = {
+      author: currentUser.name,
+      content: text,
+      date: new Date().toDateString(),
+      id: generateUniqueID(),
+    };
+
+    targetPost.comments.unshift(newComment);
+
+    this.setState((prevState) => {
+      return {
+        posts: postsCopy,
       };
-
-      e.target.value = '';
-      targetPost.comments.push(newComment);
-
-      this.setState((prevState) => {
-        return {
-          posts: postsCopy,
-        };
-      });
-    }
+    });
   };
 
   render() {
