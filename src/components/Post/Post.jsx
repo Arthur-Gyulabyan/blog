@@ -1,5 +1,6 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { createTheme, withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -7,11 +8,16 @@ import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Collapse from '@material-ui/core/Collapse';
 import { pink } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Delete from '@material-ui/icons/Delete';
 import PropTypes from 'prop-types';
+import { TextField } from '@material-ui/core';
+
+const theme = createTheme();
 
 const styles = {
   root: {
@@ -25,6 +31,37 @@ const styles = {
     height: 0,
     paddingTop: '56.25%', // 16:9
   },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+  commentInput: {
+    width: '100%',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.complex,
+    }),
+    margin: '1rem 0',
+    '& .MuiInputBase-root': {
+      width: '50%',
+    },
+
+    '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
+      borderBottom: 'none',
+    },
+
+    '& .Mui-focused': {
+      width: '100%',
+    },
+  },
+  commentsHeader: {
+    borderTop: '1px solid rgba(0, 0, 0, 0.42)',
+  },
   avatar: {
     width: '100%',
     backgroundColor: pink.A400,
@@ -35,9 +72,14 @@ const styles = {
 
 function Post({ classes, author, title, date, content, deleteHandler, id }) {
   const [liked, setLiked] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(false);
 
   const handleFavoriteClick = () => {
     setLiked(!liked);
+  };
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
   };
 
   return (
@@ -71,7 +113,30 @@ function Post({ classes, author, title, date, content, deleteHandler, id }) {
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
+        <IconButton
+          className={clsx(classes.expand, {
+            [classes.expandOpen]: expanded,
+          })}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more">
+          <ExpandMoreIcon />
+        </IconButton>
       </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent style={{ position: 'relative' }}>
+          <Typography variant="h6" className={classes.commentsHeader}>
+            Comments
+          </Typography>
+          <TextField
+            required
+            id="standard-basic"
+            label="Add Comment"
+            color="secondary"
+            className={classes.commentInput}
+          />
+        </CardContent>
+      </Collapse>
     </Card>
   );
 }
@@ -80,6 +145,10 @@ Post.propTypes = {
   classes: PropTypes.shape({
     root: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,
+    expand: PropTypes.string.isRequired,
+    expandOpen: PropTypes.string.isRequired,
+    commentInput: PropTypes.string.isRequired,
+    commentsHeader: PropTypes.string.isRequired,
   }).isRequired,
   author: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
