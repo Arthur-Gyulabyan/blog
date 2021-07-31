@@ -22,6 +22,11 @@ class Main extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { posts } = this.state;
+    saveData('posts', posts);
+  }
+
   addPost = (title, content) => {
     const {
       currentUser: { name, userId },
@@ -38,6 +43,7 @@ class Main extends React.Component {
             authorId: userId,
             date: new Date().toDateString(),
             id: generateUniqueID(),
+            comments: [],
           },
         ];
 
@@ -114,6 +120,29 @@ class Main extends React.Component {
     this.setState({ isLoggedIn: false, currentUser: null });
   };
 
+  addComment = (e, id) => {
+    if (e.key === 'Enter') {
+      const { currentUser, posts } = this.state;
+      const postsCopy = JSON.parse(JSON.stringify(posts));
+      const targetPost = postsCopy.find((item) => item.id === id);
+      const newComment = {
+        author: currentUser.name,
+        content: e.target.value,
+        date: new Date().toDateString(),
+        id: generateUniqueID(),
+      };
+
+      e.target.value = '';
+      targetPost.comments.push(newComment);
+
+      this.setState((prevState) => {
+        return {
+          posts: postsCopy,
+        };
+      });
+    }
+  };
+
   render() {
     const { isLoggedIn, posts, currentUser } = this.state;
 
@@ -127,7 +156,11 @@ class Main extends React.Component {
           />
           <Switch>
             <Route exact path="/">
-              <Posts posts={posts} deleteHandler={this.deletePost} curr />
+              <Posts
+                posts={posts}
+                deleteHandler={this.deletePost}
+                enterHandler={this.addComment}
+              />
             </Route>
             <Route exact path="/add-post">
               <PostCreator

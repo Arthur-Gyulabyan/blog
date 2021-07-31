@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Container from '@material-ui/core/Container';
 import Post from '../Post/Post';
 
-export default function Posts({ posts, deleteHandler }) {
+export default function Posts({ posts, deleteHandler, enterHandler }) {
   return (
     <Container maxWidth="sm">
       {posts.map((item) => {
@@ -17,6 +17,8 @@ export default function Posts({ posts, deleteHandler }) {
             key={id}
             id={id}
             deleteHandler={deleteHandler}
+            enterHandler={enterHandler}
+            comments={item.comments}
           />
         );
       })}
@@ -27,4 +29,5 @@ export default function Posts({ posts, deleteHandler }) {
 Posts.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object])).isRequired,
   deleteHandler: PropTypes.func.isRequired,
+  enterHandler: PropTypes.func.isRequired,
 };
